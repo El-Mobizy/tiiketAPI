@@ -1,11 +1,10 @@
 from functools import wraps
 from . import app
-from flask import request, make_response, jsonify,session
-from .models import User, UserToken
-from . import db
+from flask import request, make_response, jsonify, session
+from .models import User, UserToken, db
 import jwt
 from datetime import datetime, timedelta
-from .utils.securityHelper import SecurityHelper
+from .utils.security_helper import SecurityHelper
 
 
 @app.post('/api/hook_user_signup')
@@ -40,28 +39,36 @@ def login_user():
         {
             'user_id': user.uid,
             'exp': datetime.now() + timedelta(minutes=30),
-            'iat': datetime.now()
         },
         app.config['SECRET_KEY'],
         algorithm='HS256')
 
-    user_token = UserToken.query.filter_by(user_id=user.id, token=token).first()
+    user_token = UserToken.query.filter_by(user_id=user.id).first()
     if not user_token:
         user_token = UserToken(token=token, user_id=user.id)
         db.session.add(user_token)
-        db.session.commit()
+    else:
+        user_token.token = token
+
+    db.session.commit()
+
     csrf_token = SecurityHelper.generate_csrf_token()
     session['csrf_token'] = csrf_token
 
-    response = make_response(jsonify({'message': 'User authenticated','user_token': user_token.token}), 200)
+    response = make_response(jsonify(
+        {'message': 'User authenticated',
+         'user_token': user_token.token
+         }), 200)
     response.headers['X-CSRF-Token'] = csrf_token
     return response
+
 
 @app.route('/api/logout')
 def logout():
     # Clear the session
     session.clear()
     return make_response({'message': 'User logged out'}, 200)
+
 
 def token_required(f):
     @wraps(f)
@@ -76,7 +83,7 @@ def token_required(f):
 
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
-            current_user = User.query.filter_by(id=data['user_id']).first()
+            current_user = User.query.filter_by(uid=data['user_id']).first()
         except:
             return make_response({'message': 'Token is invalid!'}), 401
         return f(current_user, *args, **kwargs)
