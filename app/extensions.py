@@ -5,3 +5,11 @@ from flask_jwt_extended import JWTManager
 api = Api()
 db = SQLAlchemy()
 jwt = JWTManager()
+
+authorizations = {
+    "jwt": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+    }
+}
