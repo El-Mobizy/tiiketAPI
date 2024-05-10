@@ -23,7 +23,9 @@ class Priority(Enum):
     MEDIUM = 'Medium'
     LOW = 'Low'
 
+
 USER_ID = 'user.id'
+
 
 class CommonFields(db.Model):
     __abstract__ = True
@@ -46,9 +48,7 @@ class User(CommonFields, db.Model):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     def __repr__(self):
-        if self is None:
-            raise ValueError('User object is None')
-        return '<User %r>' % self.username
+        return f'<User {self.username}>'
 
     def __str__(self) -> str:
         return f"User {self.username}"
@@ -61,9 +61,7 @@ class UserToken(CommonFields, db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(USER_ID), nullable=False)
 
     def __repr__(self):
-        if self is None:
-            raise ValueError('UserToken object is None')
-        return '<UserToken %r>' % self.token
+        return f'<UserToken {self.token}>'
 
 
 class Project(CommonFields, db.Model):
@@ -78,9 +76,7 @@ class Project(CommonFields, db.Model):
     end_date = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
-        if self is None:
-            raise ValueError('Project object is None')
-        return '<Project %r>' % self.title
+        return f'<Project {self.title}>'
 
 
 class Role(CommonFields, db.Model):
@@ -89,9 +85,7 @@ class Role(CommonFields, db.Model):
     description = db.Column(db.String(255), nullable=True)
 
     def __repr__(self):
-        if self is None:
-            raise ValueError('Role object is None')
-        return '<Role %r>' % self.name
+        return f'<Role {self.name}>'
 
 
 class Ticket(CommonFields, db.Model):
@@ -107,8 +101,6 @@ class Ticket(CommonFields, db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey(USER_ID), nullable=False)
 
     def __repr__(self):
-        if self is None:
-            raise ValueError('Ticket object is None')
         return f'<Ticket {self.title}>'
 
 
@@ -121,8 +113,6 @@ class Team(CommonFields, db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
 
     def __repr__(self):
-        if self is None:
-            raise ValueError('Team object is None')
         return f"<Team {self.name}>"
 
 
@@ -135,9 +125,7 @@ class AppLog(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        if self is None:
-            raise ValueError('AppLog object is None')
-        return f"<Log {self.id}>"
+        return f'<AppLog {self.action}>'
 
 
 class Tag(CommonFields, db.Model):
@@ -147,8 +135,6 @@ class Tag(CommonFields, db.Model):
     description = db.Column(db.String(255))
 
     def __repr__(self):
-        if self is None:
-            raise ValueError('Tag object is None')
         return f"<Tag {self.name}>"
 
 
@@ -159,6 +145,4 @@ class TagEntity(CommonFields, db.Model):
     entity = db.Column(db.String(50), nullable=False, unique=True)
 
     def __repr__(self):
-        if self is None:
-            raise ValueError('Tag object is None')
         return f"<Tag {self.name}>"
