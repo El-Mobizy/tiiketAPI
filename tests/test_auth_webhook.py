@@ -3,7 +3,7 @@ import os
 import sys
 from unittest.mock import patch
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import create_app
 from app.extensions import db
@@ -29,13 +29,13 @@ class AuthWebhookTestCase(unittest.TestCase):
             with patch("app.resources.auth.create_access_token") as mock_create_access_token:
                 mock_create_access_token.return_value = "fake_access_token"
                 try:
-                    user = User.query.filter_by(email="test@example.com", username="testuser").first()
+                    user = User.query.filter_by(email="tests@example.com", username="testuser").first()
                     if not user:
-                        user = User(username="testuser", email="test@example.com")
+                        user = User(username="testuser", email="tests@example.com")
                         db.session.add(user)
                         db.session.commit()
 
-                    data = {"email": "test@example.com"}
+                    data = {"email": "tests@example.com"}
                     response = self.app.post("/api/auth/webhook/login", json=data)
                     self.assertEqual(response.status_code, 200)
                     self.assertIn("access_token", response.json)
@@ -113,7 +113,7 @@ class AuthWebhookTestCase(unittest.TestCase):
         with app.app_context():
             # Test registering a new user with an email that already exists in the database
 
-            data = {"username": "testuser2", "email": "test@example.com"}
+            data = {"username": "testuser2", "email": "tests@example.com"}
             try:
                 response = self.app.post("/api/auth/webhook/register", json=data)
                 self.assertEqual(response.status_code, 409)

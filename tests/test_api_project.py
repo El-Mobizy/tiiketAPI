@@ -4,7 +4,7 @@ import sys
 import logging
 from unittest.mock import patch
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import create_app
 from app.extensions import db
@@ -49,7 +49,7 @@ class ProjectTestCase(unittest.TestCase):
 
     def test_successful_project_creation(self):
         try:
-            response = self.app.post('/api/v1/project', json={"title": "test", "description": "test"},
+            response = self.app.post('/api/v1/project', json={"title": "tests", "description": "tests"},
                                      headers={'Authorization': ACCESS_TOKEN})
             if response.status_code == 201:  # Everything went well
                 self.assertEqual(response.status_code, 201)
@@ -61,7 +61,7 @@ class ProjectTestCase(unittest.TestCase):
 
     def test_duplicate_project(self):
         try:
-            response = self.app.post('/api/v1/project', json={"title": "test", "description": "test"},
+            response = self.app.post('/api/v1/project', json={"title": "tests", "description": "tests"},
                                      headers={'Authorization': ACCESS_TOKEN})
             if response.status_code == 201:  # Everything went well
                 self.assertEqual(response.status_code, 201)
