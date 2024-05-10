@@ -21,10 +21,6 @@ class AuthWebhookTestCase(unittest.TestCase):
         with app.app_context():
             db.create_all()
 
-    # def tearDown(self):
-    #     with app.app_context():
-    #         db.session.remove()
-    #         db.drop_all()
 
     def test_login_with_existing_user(self):
         # Test logging in with valid credentials

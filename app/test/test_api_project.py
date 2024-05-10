@@ -1,13 +1,13 @@
 import unittest
 import os
 import sys
+import logging
 from unittest.mock import patch
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from app import create_app
 from app.extensions import db
-from app.models import User
 
 # Create the Flask application instance
 app = create_app()
@@ -26,17 +26,14 @@ class ProjectTestCase(unittest.TestCase):
         with app.app_context():
             db.create_all()
 
-    # def tearDown(self):
-    #     with app.app_context():
-    #         db.session.remove()
-    #         db.drop_all()
-
     def test_get_project(self):
         try:
             response = self.app.get('/api/v1/project', headers={'Authorization': ACCESS_TOKEN})
             self.assertEqual(response.status_code, 200)
             self.assertIsNotNone(response.json)
         except Exception as e:
+            # Add logic to handle the exception, for example logging the error
+            logging.error(f"An error occurred in test_get_project: {str(e)}")
             self.fail(f"Exception occurred: {str(e)}")
 
     def test_user_not_found(self):

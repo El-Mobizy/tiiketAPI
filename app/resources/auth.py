@@ -29,11 +29,7 @@ class LoginWebhook(Resource):
             user.last_login = datetime.now()
             db.session.commit()
 
-            user_data = {
-                "id": user.uid,
-                "username": user.username,
-                "email": user.email,
-            }
+
 
             access_token = create_access_token(identity=user, expires_delta=timedelta(minutes=30))
             response_data = {"message": "Logged in", "access_token": access_token}
