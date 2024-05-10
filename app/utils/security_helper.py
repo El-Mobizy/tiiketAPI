@@ -4,10 +4,10 @@ import re
 class SecurityHelper:
     @staticmethod
     def sanitize_input(input_str):
-        sanitized_str = re.sub(r'[;\'"\[\]{}()*]', '', input_str)
-        sanitized_str = re.sub(r'\\', r'\\\\', sanitized_str)
-        sanitized_str = re.sub(r"'", r"\'", sanitized_str)
-        sanitized_str = re.sub(r'"', r'\"', sanitized_str)
+        sanitized_str = str.replace(r'[;\'"\[\]{}()*]', '', input_str)
+        sanitized_str = str.replace(r'\\', r'\\\\', sanitized_str)
+        sanitized_str = str.replace(r"'", r"\'", sanitized_str)
+        sanitized_str = str.replace(r'"', r'\"', sanitized_str)
         return sanitized_str
 
     @staticmethod
