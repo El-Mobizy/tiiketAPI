@@ -2,11 +2,11 @@ from flask import Flask
 import os
 from dotenv import load_dotenv
 from app.extensions import api, db, jwt
-from app.resources.project import project_api
-from app.resources.auth import authentication_webhook_ns
+from app.api_setup import setup_namespaces
 from app.models import User
 
 load_dotenv()
+
 
 def create_app():
     app = Flask(__name__)
@@ -16,9 +16,7 @@ def create_app():
     api.init_app(app)
     db.init_app(app)
     jwt.init_app(app)
-
-    api.add_namespace(authentication_webhook_ns)
-    api.add_namespace(project_api)
+    setup_namespaces(api)
 
     @jwt.user_identity_loader
     def user_identity_lookup(user):
@@ -30,6 +28,7 @@ def create_app():
         return User.query.filter_by(id=identity).first()
 
     return app
+
 
 # Create the Flask application instance
 app = create_app()

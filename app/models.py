@@ -29,7 +29,7 @@ USER_ID = 'user.id'
 
 class CommonFields(db.Model):
     __abstract__ = True
-    uid = db.Column(db.String(36), default=str(uuid.uuid4()), unique=True)
+    uid = db.Column(db.String(36), default=lambda: str(uuid.uuid4()), unique=True)
     created_at = db.Column(db.DateTime, default=datetime.now, nullable=True)
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     is_deleted = db.Column(db.Boolean, default=False, nullable=True)
@@ -78,6 +78,22 @@ class Project(CommonFields, db.Model):
     def __repr__(self):
         return f'<Project {self.title}>'
 
+class Task(CommonFields, db.Model):
+    __tablename__ = 'task'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    assignee_id = db.Column(db.Integer, db.ForeignKey(USER_ID), nullable=True)
+    due_date = db.Column(db.Date, nullable=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey(USER_ID), nullable=False)
+    completed_date = db.Column(db.Date, nullable=True)
+    priority = db.Column(db.Enum(Priority), default=Priority.LOW)
+    status = db.Column(db.Enum(Status), default=Status.PENDING)
+    progress = db.Column(db.Integer, default=0)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<Task {self.title}>'
 
 class Role(CommonFields, db.Model):
     id = db.Column(db.Integer, primary_key=True)
