@@ -12,6 +12,10 @@ from app.utils.security_helper import SecurityHelper
 task_api = Namespace('api/v1/task', description='Tiiket App Task logic', authorizations=authorizations)
 
 
+def _get_users_tasks():
+    return Task.query.filter_by(owner_id=current_user.id, is_deleted=False).all()
+
+
 @task_api.route("/")
 class MultipleTaskResource(Resource):
     method_decorators = [jwt_required()]
@@ -22,7 +26,7 @@ class MultipleTaskResource(Resource):
         user = self._get_user()
         if user is None:
             return make_response({'message': 'No such user found'}, 404)
-        tasks = self._get_users_tasks()
+        tasks = _get_users_tasks()
         return tasks
 
     @task_api.doc(security="jwt")
@@ -35,9 +39,6 @@ class MultipleTaskResource(Resource):
         db.session.commit()
 
         return new_task, 201
-
-    def _get_users_tasks(self):
-        return Task.query.filter_by(owner_id=current_user.id, is_deleted=False).all()
 
     def _get_user(self):
         return User.query.filter_by(id=current_user.id).first()
