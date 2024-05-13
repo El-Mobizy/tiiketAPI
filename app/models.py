@@ -25,6 +25,7 @@ class Priority(Enum):
 
 
 USER_ID = 'user.id'
+PROJECT_ID = 'project.id'
 
 
 class CommonFields(db.Model):
@@ -90,7 +91,7 @@ class Task(CommonFields, db.Model):
     priority = db.Column(db.Enum(Priority), default=Priority.LOW)
     status = db.Column(db.Enum(Status), default=Status.PENDING)
     progress = db.Column(db.Integer, default=0)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey(PROJECT_ID), nullable=False)
 
     def __repr__(self):
         return f'<Task {self.title}>'
@@ -112,7 +113,7 @@ class Ticket(CommonFields, db.Model):
     description = db.Column(db.Text, nullable=False)
     status = db.Column(db.Enum(Status), default=Status.PENDING)
     priority = db.Column(db.Enum(Priority), default=Priority.MEDIUM)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey(PROJECT_ID), nullable=False)
     assignee_id = db.Column(db.Integer, db.ForeignKey(USER_ID), nullable=True)
     owner_id = db.Column(db.Integer, db.ForeignKey(USER_ID), nullable=False)
 
@@ -126,7 +127,7 @@ class Team(CommonFields, db.Model):
     name = db.Column(db.String(100), nullable=True, unique=True)
     description = db.Column(db.String(255), nullable=True)
     members = db.Column(db.Integer, db.ForeignKey(USER_ID), nullable=False)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey(PROJECT_ID), nullable=False)
 
     def __repr__(self):
         return f"<Team {self.name}>"
